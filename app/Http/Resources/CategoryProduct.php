@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\Category as CategoryResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\Category;
 
-class Product extends JsonResource
+use App\Http\Resources\ProductOnly as ProductOnlyResource;
+
+class CategoryProduct extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,14 +18,14 @@ class Product extends JsonResource
     {
         return [
             'id' => $this->id,
-            'product_name' => $this->product_name,
+            'category_name' => $this->category_name,
             'slug' => $this->slug,
-            'category_id' => new CategoryResource(Category::findOrFail($this->category_id)),
-            'product_image' => $this->product_image != null ? asset('site/uploads/product/' . $this->product_image) : null,
-            'product_description' => $this->product_description,
-            'product_cost' => $this->product_cost,
+            'category_image' => $this->category_image != null ? asset('site/uploads/category/' . $this->category_image) : null,
+            'category_description' => $this->category_description,
             'created_at' => $this->created_at->format('m/d/Y'),
             'updated_at' => $this->updated_at->format('m/d/Y'),
+            'products' => ProductOnlyResource::collection($this->products)
+
         ];
     }
 }

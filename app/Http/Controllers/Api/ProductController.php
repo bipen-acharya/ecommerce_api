@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController as BaseController;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\Product as ProductResource;
+use App\Http\Resources\Category as CategoryResource;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
 
 class ProductController extends BaseController
 {
@@ -16,11 +19,20 @@ class ProductController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $product = Product::all();
-        return $this->sendResponse(ProductResource::collection($product), 'products Fetched');
+        $pageSize = $request->page_size ?? 10;
+        $products = Product::orderby('id', 'desc')->paginate($pageSize);
+        $categories = Category::orderby('id', 'desc')->paginate($pageSize);
+
+        // yo chai pagination with multiple data ko lagi
+        return [
+            'categories' => CategoryResource::collection($categories)->response()->getData(true),
+            'products' => ProductResource::collection($products)->response()->getData(true),
+        ];
+        // $product = Product::all();
+        // return $this->sendResponse(ProductResource::collection($product), 'products Fetched');
     }
 
     /**
@@ -47,11 +59,13 @@ class ProductController extends BaseController
             'product_name' => 'required|unique:products,product_name',
             'product_image' => 'image|mimes:jpeg,png,jpg,gif,svg',
             'product_cost' => 'required',
+            'category_id' => 'required',
         ]);
         if ($validator->fails()) {
             return $this->sendError('Error Validation', $validator->errors(), 400);
         }
         $product_name = $request->input('product_name');
+        $slug = Str::slug($product_name);
         $category_id = $request->input('category_id');
         $product_description = $request->input('product_description');
         $product_image = $request->file('product_image');
@@ -64,6 +78,7 @@ class ProductController extends BaseController
         }
         $product = new Product();
         $product->product_name = $product_name;
+        $product->slug = $slug;
         $product->category_id = $category_id;
         $product->product_description = $product_description;
         $product->product_cost = $product_cost;
@@ -125,12 +140,9 @@ class ProductController extends BaseController
         if (is_null($product)) {
             return $this->sendError('product does not exist.');
         }
-
-        return response()->json($request->all(), 200);
         $product_name = $request->input('product_name');
-
+        $slug = Str::slug($product_name);
         $category_id = $request->input('category_id');
-
         $product_description = $request->input('product_description');
         $product_image = $request->file('product_image');
         $product_cost = $request->input('product_cost');
@@ -145,6 +157,7 @@ class ProductController extends BaseController
         }
 
         $product->product_name = $product_name;
+        $product->slug = $slug;
         $product->category_id = $category_id;
         $product->product_description = $product_description;
         $product->product_cost = $product_cost;
@@ -174,4 +187,6 @@ class ProductController extends BaseController
         $product->delete();
         return $this->sendResponse('Hello', 'product deleted.');
     }
+
+    
 }

@@ -25,6 +25,7 @@ Route::get('/catgeory/{id}', [CategoryController::class, 'getCategory']);
 Route::get('/catgeory/delete/{id}', [CategoryController::class, 'getCategoryDelete']);
 Route::post('/catgeory/add', [CategoryController::class, 'postAddCategory']);
 Route::post('/catgeory/edit/{id}', [CategoryController::class, 'postEditCategory']);
+Route::get('/catgeory/{id}/products', [CategoryController::class, 'getProductsWithCategory']);
 
 
 Route::post('/product/{id}', [ProductController::class, 'update']);

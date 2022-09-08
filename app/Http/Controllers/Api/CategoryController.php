@@ -5,18 +5,23 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Api\BaseController as BaseController;
 use Illuminate\Http\Request;
 use App\Http\Resources\Category as CategoryResource;
+use App\Http\Resources\CategoryProduct as CategoryProductResource;
+
 use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-use function PHPUnit\Framework\isNull;
 
 class CategoryController extends BaseController
 {
-    public function getCategories()
+    public function getCategories(Request $request)
     {
-        $categoeries = Category::all();
-        return $this->sendResponse(CategoryResource::collection($categoeries), 'Category Fetched');
+        // $categoeries = Category::all();
+        // return $this->sendResponse(CategoryResource::collection($categoeries), 'Category Fetched');
+        $pageSize = $request->page_size ?? 5;
+        // return response()->json($pageSize, 200);
+        $categories = Category::orderby('id', 'desc')->paginate($pageSize);
+        return CategoryResource::collection($categories);
     }
 
     public function getCategory($id)
@@ -110,5 +115,15 @@ class CategoryController extends BaseController
         }
         $category->save();
         return $this->sendResponse(new CategoryResource($category), ' Category Edited');
+    }
+
+    public function getProductsWithCategory($id)
+    {
+        $category = Category::find($id);
+        if (is_null($category)) {
+            return $this->sendError('Category does not exist.');
+        }
+        // return CategoryProductResource::collection($category);
+        return $this->sendResponse(new CategoryProductResource($category), 'Single Category fetched.');
     }
 }
