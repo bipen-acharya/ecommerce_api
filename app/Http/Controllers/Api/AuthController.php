@@ -29,7 +29,7 @@ class AuthController extends BaseController
             DB::table('personal_access_tokens')->where('tokenable_id', $user->id)->delete();
 
             $success['token'] =  $user->createToken('classecom')->plainTextToken;
-            $success['name'] =  $user->name;
+            $success['data'] =  $user;
 
 
             return $this->sendResponse($success, 'User Login successfully.');
@@ -65,7 +65,7 @@ class AuthController extends BaseController
         // return response()->json($user, 200);
         $success['token'] = $user->createToken('MyAuthApp')->plainTextToken;
 
-        $success['name'] = $user->name;
+        $success['data'] = $user;
 
         return $this->sendResponse($success, 'User created successfully.');
     }

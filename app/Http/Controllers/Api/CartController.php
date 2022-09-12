@@ -49,6 +49,7 @@ class CartController extends BaseController
         }
         $product = Product::all();
         $user_id = $request->input('user_id');
+        // return request();
 
         $product_id = $request->input('product_id');
         $product = Product::find($product_id);
@@ -57,7 +58,7 @@ class CartController extends BaseController
         $amount = $product->product_cost;
         $total_amount = $quantity * $amount;
         $cart_code = Str::random(5);
-        return response()->json($cart_code, 200);
+        // return response()->json($cart_code, 200);
         $cart = new Cart();
         $cart->user_id = $user_id;
         $cart->product_id = $product_id;

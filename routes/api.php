@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\OrderController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -45,3 +46,7 @@ Route::get('/user', [UserController::class, 'getUser']);
 
 
 Route::get('/user/{id}/carts', [CartController::class, 'getUserWithCarts']);
+
+
+Route::get('/order', [OrderController::class, 'getOrder']);
+Route::post('/order/add', [OrderController::class, 'addOrder']);
