@@ -8,6 +8,7 @@ use App\Http\Resources\Category as CategoryResource;
 use App\Http\Resources\CategoryProduct as CategoryProductResource;
 
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -124,6 +125,8 @@ class CategoryController extends BaseController
             return $this->sendError('Category does not exist.');
         }
         // return CategoryProductResource::collection($category);
-        return $this->sendResponse(new CategoryProductResource($category), 'Single Category fetched.');
+        // return $this->sendResponse(new CategoryProductResource($category), 'Single Category fetched.');
+        // $products = Product::where('category_id', $category->id)->get();
+        return response()->json($category->products, 200);
     }
 }

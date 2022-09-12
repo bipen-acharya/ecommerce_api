@@ -1,7 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\UserController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,10 +20,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
+Route::middleware('auth:sanctum')->group(function () {
+});
 Route::get('/catgeory', [CategoryController::class, 'getCategories']);
 Route::get('/catgeory/{id}', [CategoryController::class, 'getCategory']);
 Route::get('/catgeory/delete/{id}', [CategoryController::class, 'getCategoryDelete']);
@@ -30,3 +35,13 @@ Route::get('/catgeory/{id}/products', [CategoryController::class, 'getProductsWi
 
 Route::post('/product/{id}', [ProductController::class, 'update']);
 Route::resource('product', ProductController::class);
+
+
+Route::post('/cart/add', [CartController::class, 'postAddCart']);
+Route::get('/cart', [CartController::class, 'getCarts']);
+Route::get('/cart/delete/{id}', [CartController::class, 'getCartDelete']);
+
+Route::get('/user', [UserController::class, 'getUser']);
+
+
+Route::get('/user/{id}/carts', [CartController::class, 'getUserWithCarts']);

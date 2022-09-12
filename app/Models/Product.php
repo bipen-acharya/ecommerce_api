@@ -19,4 +19,9 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function carts()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
